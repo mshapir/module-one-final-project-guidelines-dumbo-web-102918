@@ -12,28 +12,35 @@ end
 
 def ask_user_what_he_wants_to_do
   prompt = TTY::Prompt.new
-  prompt.select('What would you like to do?') do |menu|
+  user_choice = prompt.select('What would you like to do?') do |menu|
     menu.choice 'Would you like to see all parking spots in a specific location?', 1
     menu.choice 'Would you like to see lisitngs priced lowest to highest?', 2, disabled: '(not working yet)'
     menu.choice 'Would you like to book a parking spot?', 3, disabled: '(out of stock)'
     menu.choice 'Would you like to see all your previous booked spots?', 4, disabled: '(not working yet)'
     menu.choice 'Would you like to delete all your previous booked spots?', 5, disabled: '(not working yet)'
     menu.choice 'Exit', 6
-
   end
+
+  if user_choice == 1
+    display_listings
+  end
+
 end
 
 def display_listings
   prompt = TTY::Prompt.new
   choices = %w(Brooklyn Queens)
-prompt.multi_select("Select location?", choices)
+ user_choice = prompt.multi_select("Select location?", choices)
+
+  find_all_spots_by_location(user_choice)
 end
 
-def find_all_spots_by_location
-  location = gets.chomp
-  list = Listing.where(location: location)
-  list.each do |lisitng|
-    puts "#{listing.title}: #{lisitng.price} (#{lisitng.location})"
+
+
+def find_all_spots_by_location(arg)
+  list = Listing.where(location: arg)
+  list.each do |listing|
+    puts "#{listing.title}: #{listing.price} (#{listing.location})"
   end
 end
 
