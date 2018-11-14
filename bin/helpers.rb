@@ -5,29 +5,42 @@ end
 
 def create_or_login
   prompt = TTY::Prompt.new
-  $user = prompt.ask('What is your name?', default: ENV['USER'])
-  User.find_or_create_by(name: $user)
-  puts "Welcome #{$user}!"
+  user = prompt.ask('What is your name?', default: ENV['USER'])
+  $user = User.find_or_create_by(name: user)
+  puts "Welcome #{user}!"
 end
 
 def ask_user_what_he_wants_to_do
   prompt = TTY::Prompt.new
   user_choice = prompt.select('What would you like to do?') do |menu|
     menu.choice 'Would you like to see all parking spots in a specific location?', 1
-    menu.choice 'Would you like to see lisitngs priced lowest to highest?', 2, disabled: '(not working yet)'
+    menu.choice 'Would you like to see listings priced lowest to highest?', 2
     menu.choice 'Would you like to book a parking spot?', 3, disabled: '(out of stock)'
-    menu.choice 'Would you like to see all your previous booked spots?', 4, disabled: '(not working yet)'
-    menu.choice 'Would you like to delete all your previous booked spots?', 5, disabled: '(not working yet)'
+    menu.choice 'Would you like to see all your previous booked spots?', 4
+    menu.choice 'Would you like to delete all your previous booked spots?', 5
     menu.choice 'Exit', 6
   end
 
   if user_choice == 1
-    display_listings
+    display_listings_by_location
+  elsif user_choice == 2
+    price_lowest_to_highest
+  elsif user_choice == 4
+    veiw_all_my_listings
+  elsif user_choice == 5
+    delete_all_listings
   end
 
 end
 
-def display_listings
+def price_lowest_to_highest
+listings = Listing.order(price: :asc)
+  listings.each do |listing|
+    puts "- #{listing.title}: #{listing.price} (#{listing.location})"
+  end
+end
+
+def display_listings_by_location
   prompt = TTY::Prompt.new
   choices = %w(Brooklyn Queens)
  user_choice = prompt.multi_select("Select location?", choices)
@@ -35,6 +48,10 @@ def display_listings
   find_all_spots_by_location(user_choice)
 end
 
+  # def choose_listing
+  #   prompt = TTY::Prompt.new
+  #
+  # end
 
 
 def find_all_spots_by_location(arg)
@@ -43,6 +60,29 @@ def find_all_spots_by_location(arg)
     puts "#{listing.title}: #{listing.price} (#{listing.location})"
   end
 end
+
+def veiw_all_my_listings
+  list = $user.listings
+  list.each do |listing|
+    puts "- #{listing.title}: #{listing.price} (#{listing.location})"
+  end
+end
+
+def delete_all_listings
+     $user.listings.destroy_all
+    puts "Deleted!"
+end
+
+
+
+# def book_listing
+#   puts "What listing would you like to book"
+#   input = gets.chomp
+#
+#  Listing.all.each do |listing|
+#   if listing.title == input
+#     $user.listings << listing
+#   end
 
 
 
@@ -94,7 +134,7 @@ end
 #   getLocationFromUser
 # end
 #
-# def display_listings(location)
+# def display_listings_by_location(location)
 #   listings = Listing.where(location: location).order(price: :asc)
 #   listings.each do |listing|
 #     puts "- #{listing.title}: #{listing.price} (#{listing.location})"
@@ -104,9 +144,9 @@ end
 #   puts "What listing would you like to book"
 #   input = gets.chomp
 #
-#  Listing.all.each do |lisitng|
-#   if lisitng.title == input
-#     $user.listings << lisitng
+#  Listing.all.each do |listing|
+#   if listing.title == input
+#     $user.listings << listing
 #   end
 #
 # end
@@ -127,7 +167,7 @@ end
 #   end
 # end
 #
-# def delete_all_lisitngs
+# def delete_all_listings
 #   puts "Do you want to delete all your previous listings?"
 #   input = gets.chomp
 #   if input == "yes"
