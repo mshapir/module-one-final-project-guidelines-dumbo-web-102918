@@ -15,7 +15,7 @@ def ask_user_what_he_wants_to_do
   user_choice = prompt.select('What would you like to do?') do |menu|
     menu.choice 'Would you like to see all parking spots in a specific location?', 1
     menu.choice 'Would you like to see listings priced lowest to highest?', 2
-    menu.choice 'Would you like to book a parking spot?', 3, disabled: '(out of stock)'
+    menu.choice 'Would you like to book a parking spot?', 3
     menu.choice 'Would you like to see all your previous booked spots?', 4
     menu.choice 'Would you like to delete all your previous booked spots?', 5
     menu.choice 'Exit', 6
@@ -23,12 +23,20 @@ def ask_user_what_he_wants_to_do
 
   if user_choice == 1
     display_listings_by_location
-  elsif user_choice == 2
+    ask_user_what_he_wants_to_do
+   elsif user_choice == 2
     price_lowest_to_highest
-  elsif user_choice == 4
+    ask_user_what_he_wants_to_do
+  elsif user_choice == 3
+    book_listing
+    ask_user_what_he_wants_to_do
+   elsif user_choice == 4
     veiw_all_my_listings
-  elsif user_choice == 5
+    ask_user_what_he_wants_to_do
+   elsif user_choice == 5
     delete_all_listings
+    ask_user_what_he_wants_to_do
+
   end
 
 end
@@ -75,14 +83,23 @@ end
 
 
 
-# def book_listing
-#   puts "What listing would you like to book"
-#   input = gets.chomp
-#
-#  Listing.all.each do |listing|
-#   if listing.title == input
-#     $user.listings << listing
-#   end
+def book_listing
+  prompt = TTY::Prompt.new
+  user_choice = prompt.select('Choose a listing to book.') do |menu|
+    Listing.all.each_with_index do |listing, index|
+      menu.choice "#{listing.title}: #{listing.price} (#{listing.location})", index + 1
+    end
+    menu.choice 'Exit', Listing.all.length + 1
+  end
+
+  listing = Listing.all[user_choice - 1]
+  $user.listings << listing
+  puts "Congratulations, you have just booked #{listing.title}: #{listing.price} (#{listing.location}). Enjoy your parking spot!"
+end
+  # Listing.all.each do |listing|
+  # if listing.title == user_choice
+  #   $user.listings << listing
+  # end
 
 
 

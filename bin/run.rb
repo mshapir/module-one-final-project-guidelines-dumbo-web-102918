@@ -9,6 +9,7 @@ welcome
 # delete_all_lisitngs
 # veiw_all_my_listings
 create_or_login
+# book_listing
 ask_user_what_he_wants_to_do
 # display_listings
 # book_listing
