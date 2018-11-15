@@ -1,4 +1,5 @@
 require "colorize"
+require "text-table"
 
 def welcome
   # puts '______          _   ___  ___'
@@ -48,7 +49,8 @@ def ask_user_what_he_wants_to_do
     menu.choice 'Would you like to book a parking spot?', 3
     menu.choice 'Would you like to see all your previous booked spots?', 4
     menu.choice 'Would you like to delete all your previous booked spots?', 5
-    menu.choice 'Exit', 6
+    menu.choice 'Would you like to see total spent on parking spots?', 6
+    menu.choice 'Exit', 7
   end
 
   if user_choice == 1
@@ -76,7 +78,11 @@ def ask_user_what_he_wants_to_do
     puts '
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------'.colorize(:green)
     ask_user_what_he_wants_to_do
-
+  elsif user_choice == 6
+    total_spent
+    puts '
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------'.colorize(:green)
+    ask_user_what_he_wants_to_do
   end
 
 end
@@ -118,7 +124,8 @@ end
 
 def delete_all_listings
      $user.listings.destroy_all
-    puts "Deleted!"
+     puts " "
+    puts "Deleted!".upcase.colorize(:red)
 end
 
 
@@ -137,6 +144,14 @@ def book_listing
   puts '
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------'.colorize(:green)
   puts "Congratulations, you have just booked #{listing.title}: #{listing.price} (#{listing.location}). Enjoy your parking spot!".colorize(:blue)
+end
+
+def total_spent
+  list = $user.listings
+  sum  = list.map { |listing| listing.price }.reduce(:+).round(2)
+  puts '
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------'.colorize(:green)
+  puts "You spent $#{sum} on parking spots.".colorize(:blue)
 end
   # Listing.all.each do |listing|
   # if listing.title == user_choice
