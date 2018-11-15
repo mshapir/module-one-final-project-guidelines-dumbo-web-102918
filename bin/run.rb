@@ -1,5 +1,6 @@
 require_relative '../config/environment'
 require_relative './helpers.rb'
+# require 'colorize'
 
 puts `clear`
 # create_new_user
@@ -17,5 +18,5 @@ ask_user_what_he_wants_to_do
 # listing = Listing.find_all_by_location(location)
 # puts listing
 # location = locationFromLowestToHighestPrice
-puts `clear`
+# puts `clear`
 # display_listings(location)

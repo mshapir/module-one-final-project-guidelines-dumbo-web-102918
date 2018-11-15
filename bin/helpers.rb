@@ -1,5 +1,26 @@
+require "colorize"
+
 def welcome
-  puts "Hello! Welcome to ParkIt!"
+  # puts '______          _   ___  ___'
+  # puts '| ___ \        | |  |  \/  |'
+  # puts '| |_/ /_ _ _ __| | _| .  . | ___'
+  # puts '|  __/ _` | `__| |/ / |\/| |/ _ \ '
+  # puts '| | | (_| | |  |   <| |  | |  __/'
+  # puts '\_|  \__,_|_|  |_|\_\_|  |_/\___|'
+
+  puts '
+
+██████╗  █████╗ ██████╗ ██╗  ██╗    ███╗   ███╗███████╗
+██╔══██╗██╔══██╗██╔══██╗██║ ██╔╝    ████╗ ████║██╔════╝
+██████╔╝███████║██████╔╝█████╔╝     ██╔████╔██║█████╗
+██╔═══╝ ██╔══██║██╔══██╗██╔═██╗     ██║╚██╔╝██║██╔══╝
+██║     ██║  ██║██║  ██║██║  ██╗    ██║ ╚═╝ ██║███████╗
+╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝     ╚═╝╚══════╝
+
+'.colorize(:color => :light_blue, :background => :green)
+puts '
+=====================================================================================================================================================================================
+'.colorize(:light_blue)
 end
 
 
@@ -7,10 +28,19 @@ def create_or_login
   prompt = TTY::Prompt.new
   user = prompt.ask('What is your name?', default: ENV['USER'])
   $user = User.find_or_create_by(name: user)
-  puts "Welcome #{user}!"
+  system("Clear")
+  welcome
+#   puts '
+# =====================================================================================================================================================================================
+#   '.colorize(:light_blue)
+  puts "Welcome #{user}!".colorize(:green)
+#   puts '
+# =====================================================================================================================================================================================
+#   '.colorize(:light_blue)
 end
 
 def ask_user_what_he_wants_to_do
+  # system "clear"
   prompt = TTY::Prompt.new
   user_choice = prompt.select('What would you like to do?') do |menu|
     menu.choice 'Would you like to see all parking spots in a specific location?', 1
@@ -23,18 +53,28 @@ def ask_user_what_he_wants_to_do
 
   if user_choice == 1
     display_listings_by_location
+    puts '
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------'.colorize(:green)
     ask_user_what_he_wants_to_do
    elsif user_choice == 2
     price_lowest_to_highest
+    puts '
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------'.colorize(:green)
     ask_user_what_he_wants_to_do
   elsif user_choice == 3
     book_listing
+    puts '
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------'.colorize(:green)
     ask_user_what_he_wants_to_do
    elsif user_choice == 4
     veiw_all_my_listings
+    puts '
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------'.colorize(:green)
     ask_user_what_he_wants_to_do
    elsif user_choice == 5
     delete_all_listings
+    puts '
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------'.colorize(:green)
     ask_user_what_he_wants_to_do
 
   end
@@ -44,7 +84,7 @@ end
 def price_lowest_to_highest
 listings = Listing.order(price: :asc)
   listings.each do |listing|
-    puts "- #{listing.title}: #{listing.price} (#{listing.location})"
+    puts "- #{listing.title}: #{listing.price} (#{listing.location})".colorize(:blue)
   end
 end
 
@@ -65,14 +105,14 @@ end
 def find_all_spots_by_location(arg)
   list = Listing.where(location: arg)
   list.each do |listing|
-    puts "#{listing.title}: #{listing.price} (#{listing.location})"
+    puts "#{listing.title}: #{listing.price} (#{listing.location})".colorize(:blue)
   end
 end
 
 def veiw_all_my_listings
   list = $user.listings
   list.each do |listing|
-    puts "- #{listing.title}: #{listing.price} (#{listing.location})"
+    puts "- #{listing.title}: #{listing.price} (#{listing.location})".colorize(:blue)
   end
 end
 
@@ -94,12 +134,16 @@ def book_listing
 
   listing = Listing.all[user_choice - 1]
   $user.listings << listing
-  puts "Congratulations, you have just booked #{listing.title}: #{listing.price} (#{listing.location}). Enjoy your parking spot!"
+  puts '
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------'.colorize(:green)
+  puts "Congratulations, you have just booked #{listing.title}: #{listing.price} (#{listing.location}). Enjoy your parking spot!".colorize(:blue)
 end
   # Listing.all.each do |listing|
   # if listing.title == user_choice
   #   $user.listings << listing
   # end
+
+  # system "clear"
 
 
 
